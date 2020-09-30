@@ -1,1 +1,5 @@
-{{ nodes_build }}
+<ul>
+    {% for x in nodes_build%}
+      <li><a href="/spotifytest/{{ x.id }}">{{ x.name }}</a></li> 
+    {% endfor %}
+</ul>

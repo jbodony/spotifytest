@@ -32,10 +32,80 @@ class SpotifytestBlock extends BlockBase {
    */
   protected function getNodesBuild() {
 
+    $output = [];
+    $spotify_token = "MDIxYjY0ODRjNjgxNDRkZDliNmFhNjMyZjQwNzRkMjg6NjFjYzQzNzY3MDU1NDFhMGExMWJiZWFiYzE2YzA2OTg=";
     $config = $this->getConfiguration();
-    $quantity = isset($config['spotifytest_block']) ? $config['spotifytest_block'] : 0;
+    $quantity = isset($config['spotifytest_block']) ? $config['spotifytest_block'] : 20;
 
-    return ("Max number: " . $quantity);
+
+    // Download the artists from Spotify
+    // Get the token
+    $endpoint = "https://accounts.spotify.com/api/token";
+    $options = [
+      'connect_timeout' => 30,
+      'debug' => false,
+      'headers' => array(
+        'Authorization' => "Basic $spotify_token"
+      ),
+      'form_params' => [
+        'grant_type' => 'client_credentials',
+      ],
+      'verify' => true,
+    ];
+
+
+    try {
+      $client = \Drupal::httpClient();
+      $request = $client->request('POST', $endpoint, $options);
+    }
+    catch (RequestException $e) {
+      // Log the error.
+      watchdog_exception('custom_modulename', $e);
+    }
+
+    $responseStatus = $request->getStatusCode();
+    $body = $request->getBody()->getContents();
+
+    $response = json_decode($body);
+    $access_token = $response->access_token;
+
+    // Get the author list
+    $endpoint = "https://api.spotify.com/v1/search?q=a&type=artist&limit=$quantity";
+    $options = [
+      'connect_timeout' => 30,
+      'debug' => false,
+      'headers' => array(
+        'Authorization' => "Bearer  $access_token",
+        'Content-Type' => "application/json",
+        'Accept' => "application/json",
+      ),
+      'verify' => true,
+    ];
+
+    try {
+      $client = \Drupal::httpClient();
+      $request = $client->request('GET', $endpoint, $options);
+    }
+    catch (RequestException $e) {
+      // Log the error.
+      watchdog_exception('custom_modulename', $e);
+    }
+
+    $responseStatus = $request->getStatusCode();
+    $body = $request->getBody()->getContents();
+
+    $response = json_decode($body);
+    $artists = $response->artists;
+    
+    
+    // Collect the artists' names and ids
+    if (!empty($artists->items)) {
+      foreach ($artists->items as $key => $artist) {
+        $output[] = ["id" => $artist->id, "name" => $artist->name];
+      }
+    }
+
+    return ($output);
   }
 
   /**
