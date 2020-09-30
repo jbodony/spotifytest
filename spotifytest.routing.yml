@@ -1,7 +1,13 @@
 spotifytest.content:
-  path: '/spotifytest'
+  path: '/spotifytest/{spotifyid}'
   defaults:
     _controller: '\Drupal\spotifytest\Controller\SpotifytestController::content'
-    _title: 'Spotifytest'
+    _title: 'Spotify Author page'
+    spotifyid: "3zOKGDS77tYdGFQ6UJMC4E"
   requirements:
     _permission: 'access content'
+    _user_is_logged_in: 'TRUE'
+  options:
+    parameters:
+      id:
+        type: string  
