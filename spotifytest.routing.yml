@@ -1,0 +1,7 @@
+spotifytest.content:
+  path: '/spotifytest'
+  defaults:
+    _controller: '\Drupal\spotifytest\Controller\SpotifytestController::content'
+    _title: 'Spotifytest'
+  requirements:
+    _permission: 'access content'

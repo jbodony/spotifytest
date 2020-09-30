@@ -1,0 +1,6 @@
+spotifytest.admin:
+  title: 'Spotifytest module settings'
+  description: 'Spotify settings page link'
+  parent: system.admin_config_development
+  route_name: spotifytest.content
+  weight: 100

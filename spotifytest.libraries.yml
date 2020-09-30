@@ -1,0 +1,16 @@
+drupal.spotifytest:
+  version: VERSION
+  css:
+    layout:
+      css/spotifytest-layout.css: {}
+    theme:
+      css/spotifytest-theme.css: {}
+  js:
+    # Core.
+    js/spotifytest.js: {}
+  dependencies:
+    - core/jquery
+    - core/drupal
+    - core/drupal.ajax
+    - core/drupalSettings
+    - core/jquery.once

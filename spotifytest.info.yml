@@ -1,0 +1,8 @@
+name: Spotifytest Module
+description: Test module for Spotify releated services
+package: Custom
+type: module
+version: 1.0
+core: 8.x
+dependencies:
+  - block
