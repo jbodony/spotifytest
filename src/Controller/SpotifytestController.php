@@ -1,15 +1,91 @@
 <?php
+
 /**
  * @file
  * Contains \Drupal\spotifytest\Controller\SpotifytestController.
  */
+
 namespace Drupal\spotifytest\Controller;
 
 class SpotifytestController {
+
   public function content($spotifyid) {
+
+    $output = [];
+    $spotify_token = "MDIxYjY0ODRjNjgxNDRkZDliNmFhNjMyZjQwNzRkMjg6NjFjYzQzNzY3MDU1NDFhMGExMWJiZWFiYzE2YzA2OTg=";
+
+
+    // Download the artists from Spotify
+    // Get the token
+    $endpoint = "https://accounts.spotify.com/api/token";
+    $options = [
+      'connect_timeout' => 30,
+      'debug' => false,
+      'headers' => array(
+        'Authorization' => "Basic $spotify_token"
+      ),
+      'form_params' => [
+        'grant_type' => 'client_credentials',
+      ],
+      'verify' => true,
+    ];
+
+
+    try {
+      $client = \Drupal::httpClient();
+      $request = $client->request('POST', $endpoint, $options);
+    }
+    catch (RequestException $e) {
+      // Log the error.
+      watchdog_exception('custom_modulename', $e);
+    }
+
+    $responseStatus = $request->getStatusCode();
+    $body = $request->getBody()->getContents();
+
+    $response = json_decode($body);
+    $access_token = $response->access_token;
+
+    // Get the author list
+    $endpoint = "https://api.spotify.com/v1/artists/$spotifyid";
+    $options = [
+      'connect_timeout' => 30,
+      'debug' => false,
+      'headers' => array(
+        'Authorization' => "Bearer  $access_token",
+        'Content-Type' => "application/json",
+        'Accept' => "application/json",
+      ),
+      'verify' => true,
+    ];
+
+    try {
+      $client = \Drupal::httpClient();
+      $request = $client->request('GET', $endpoint, $options);
+    }
+    catch (RequestException $e) {
+      // Log the error.
+      watchdog_exception('custom_modulename', $e);
+    }
+
+    $responseStatus = $request->getStatusCode();
+    $body = $request->getBody()->getContents();
+
+    $response = json_decode($body);
+
+    // Collect the artist's data
+    if (!empty($response->name)) {
+      $external_urls = $response->external_urls;
+      $output = ["name" => $response->name,
+        "external_url" => $response->external_urls->spotify,
+        "popularity" => $response->popularity,
+        ];
+    }
+
     return array(
       '#type' => 'markup',
-      '#markup' => t('Hello, Spotify!' . $spotifyid),
+      '#markup' => t('Hello ' .  implode(",", $output)),
     );
   }
+
 }
