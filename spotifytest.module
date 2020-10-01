@@ -4,14 +4,6 @@
  * @file
  * Spotify related hooks
  */
-use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
-use Drupal\Core\Entity\EntityInterface;
-use Drupal\Core\Form\FormStateInterface;
-use Drupal\node\NodeInterface;
-use Drupal\Core\Routing\RouteMatchInterface;
-use Drupal\node\Entity\Node;
-use Drupal\taxonomy\Entity\Term;
-
 
 /**
  * Implements hook_page_attachments().
@@ -35,10 +27,11 @@ function spotifytest_theme($existing, $type, $theme, $path) {
       ],
       'template'  => 'spotifytest-artistslist-block',
     ],
+    'spotifytest_artist_page' => [
+      'variables' => [
+        'artist' => [],
+      ],
+      'template'  => 'spotifytest-artist-page',
+    ],
   ];
 }
-
-
-/**
- * @} End of "defgroup hooks_example".
- */

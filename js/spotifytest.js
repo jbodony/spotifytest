@@ -1,5 +1,4 @@
 /*
  * Javascript codes
  * 
- * 
  */

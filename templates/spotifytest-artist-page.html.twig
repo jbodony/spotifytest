@@ -1,0 +1,9 @@
+{% if not artist.error %}
+  <h1>Actor's information from Spotify:</h1>
+  <p>Name: <b>{{ artist.name }}</b></p>
+  <p>Popularity: {{ artist.popularity }}</p>
+  <p>Spotify webpage: <a href="{{ artist.external_url }}" target="_Blank">{{ artist.external_url }}</a></p>
+  {% else %}
+  <p>{{ 'Error'|t }}: <b>{{ artist.error }}</b></p>
+{% endif %}
+

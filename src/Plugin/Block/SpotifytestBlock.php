@@ -35,7 +35,7 @@ class SpotifytestBlock extends BlockBase {
     $output = [];
     $spotify_token = "MDIxYjY0ODRjNjgxNDRkZDliNmFhNjMyZjQwNzRkMjg6NjFjYzQzNzY3MDU1NDFhMGExMWJiZWFiYzE2YzA2OTg=";
     $config = $this->getConfiguration();
-    $quantity = isset($config['spotifytest_block']) ? $config['spotifytest_block'] : 20;
+    $quantity = isset($config['spotifytest_block']) && $config['spotifytest_block'] >= 1 && $config['spotifytest_block'] <= 20 ? $config['spotifytest_block'] : 20;
 
 
     // Download the artists from Spotify
@@ -120,7 +120,7 @@ class SpotifytestBlock extends BlockBase {
       '#type' => 'number',
       '#title' => t('Number of Artits'),
       '#description' => t('The number should be between 0 and 20.'),
-      '#min' => 0,
+      '#min' => 1,
       '#max' => 20,
       '#step' => 1,
       '#default_value' => isset($config['spotifytest_block']) ? $config['spotifytest_block'] : '',
@@ -137,14 +137,5 @@ class SpotifytestBlock extends BlockBase {
     $values = $form_state->getValues();
     $this->configuration['spotifytest_block'] = $values['spotifytest_block'];
   }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function blockValidate($form, FormStateInterface $form_state) {
-    if (is_int($form_state->getValue('spotifytest_block'))) {
-      $form_state->setErrorByName('spotifytest_block', $this->t('Please use integer numbers'));
-    }
-  }
-
+ 
 }
