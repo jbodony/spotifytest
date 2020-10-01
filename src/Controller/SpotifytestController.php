@@ -7,11 +7,18 @@
 
 namespace Drupal\spotifytest\Controller;
 
+use Drupal\Component\Render\FormattableMarkup;
+use Drupal\Component\Utility\Html;
+
 class SpotifytestController {
 
   public function content($spotifyid) {
 
     if (!empty($spotifyid)) {
+
+      // Check_Plain
+      $string = new FormattableMarkup($spotifyid, []);
+      $spotifyid = Html::escape($string);
 
       // Spotify crendentials
       $spotify_token = "MDIxYjY0ODRjNjgxNDRkZDliNmFhNjMyZjQwNzRkMjg6NjFjYzQzNzY3MDU1NDFhMGExMWJiZWFiYzE2YzA2OTg=";
