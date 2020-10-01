@@ -1,5 +1,10 @@
-<ul>
+{% if not nodes_build.error %}
+  <ul>
     {% for x in nodes_build%}
       <li><a href="/spotifytest/{{ x.id }}">{{ x.name }}</a></li> 
-    {% endfor %}
-</ul>
+      {% endfor %}
+  </ul>
+{% else %}
+  <p>{{ 'Error'|t }}: <b>{{ nodes_build.error }}</b></p>
+{% endif %}
+

@@ -69,40 +69,45 @@ class SpotifytestBlock extends BlockBase {
     $response = json_decode($body);
     $access_token = $response->access_token;
 
-    // Get the author list
-    $endpoint = "https://api.spotify.com/v1/search?q=a&type=artist&limit=$quantity";
-    $options = [
-      'connect_timeout' => 30,
-      'debug' => false,
-      'headers' => array(
-        'Authorization' => "Bearer  $access_token",
-        'Content-Type' => "application/json",
-        'Accept' => "application/json",
-      ),
-      'verify' => true,
-    ];
+    if (!empty($access_token)) {
+      // Get the author list
+      $endpoint = "https://api.spotify.com/v1/search?q=a&type=artist&limit=$quantity";
+      $options = [
+        'connect_timeout' => 30,
+        'debug' => false,
+        'headers' => array(
+          'Authorization' => "Bearer  $access_token",
+          'Content-Type' => "application/json",
+          'Accept' => "application/json",
+        ),
+        'verify' => true,
+      ];
 
-    try {
-      $client = \Drupal::httpClient();
-      $request = $client->request('GET', $endpoint, $options);
-    }
-    catch (RequestException $e) {
-      // Log the error.
-      watchdog_exception('custom_modulename', $e);
-    }
-
-    $responseStatus = $request->getStatusCode();
-    $body = $request->getBody()->getContents();
-
-    $response = json_decode($body);
-    $artists = $response->artists;
-    
-    
-    // Collect the artists' names and ids
-    if (!empty($artists->items)) {
-      foreach ($artists->items as $key => $artist) {
-        $output[] = ["id" => $artist->id, "name" => $artist->name];
+      try {
+        $client = \Drupal::httpClient();
+        $request = $client->request('GET', $endpoint, $options);
       }
+      catch (RequestException $e) {
+        // Log the error.
+        watchdog_exception('custom_modulename', $e);
+      }
+
+      $responseStatus = $request->getStatusCode();
+      $body = $request->getBody()->getContents();
+
+      $response = json_decode($body);
+      $artists = $response->artists;
+
+
+      // Collect the artists' names and ids
+      if (!empty($artists->items)) {
+        foreach ($artists->items as $key => $artist) {
+          $output[] = ["id" => $artist->id, "name" => $artist->name];
+        }
+      }
+    }
+    else {
+      $output = ["error" => t("Access token is missing.")];
     }
 
     return ($output);
@@ -137,5 +142,5 @@ class SpotifytestBlock extends BlockBase {
     $values = $form_state->getValues();
     $this->configuration['spotifytest_block'] = $values['spotifytest_block'];
   }
- 
+
 }
